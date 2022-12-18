@@ -1,17 +1,18 @@
 import type { PageLoad } from './$types';
-import { getProductByHandle } from '$src/store';
+import { getCollectionByHandle } from '$src/store';
 import { error } from "@sveltejs/kit";
 
 export const load: PageLoad = async ({ params }) => {
-  const product = await getProductByHandle(params.handle);
+  const collection = await getCollectionByHandle(params.handle);
+  console.log('aaa collection', collection);
 
-  if (!product) {
+  if (!collection) {
     throw error(404, {
       message: 'Something went wrong',
     });
   }
 
   return {
-    product,
+    collection,
   };
 };
