@@ -5,7 +5,8 @@ import {
 import { error } from '@sveltejs/kit';
 
 interface Variables {
-  handle: string;
+  handle?: string;
+  id?: string;
 }
 
 export const postToShopify = async (

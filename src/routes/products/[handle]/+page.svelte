@@ -1,12 +1,17 @@
 <script>
+  import AddToCart from '$lib/components/AddToCart.svelte';
+
   export let data;
   const product = data.product;
   const images = product.images.edges;
   const variants = product.variants.edges;
+
+  export let selectedVariant = '';
 </script>
 
 <main>
   <h1 class="h1 font-secondary">{product.title}</h1>
+  <div>value: {selectedVariant}</div>
 
   <div class="flex">
     <div class="basis-2/3">
@@ -26,14 +31,19 @@
           {#each variants as variant}
             {#if variant.node.title !== 'Default Title'}
               <li>
-                <button class="btn" type="button">{variant.node.title}</button>
+                <button
+                  class="btn"
+                  type="button"
+                  on:click={() => { selectedVariant = variant.node.id; }}
+                >
+                  {variant.node.title}
+                </button>
               </li>
             {/if}
         {/each}
         </ul>
       </div>
+      <AddToCart {selectedVariant} />
     </div>
   </div>
-
-
 </main>

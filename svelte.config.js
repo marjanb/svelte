@@ -23,6 +23,7 @@ const config = {
       '$gql': 'src/gql',
       '$routes': 'src/routes',
       '$styles': 'src/styles',
+      '$types': 'src/types',
     },
   },
 };

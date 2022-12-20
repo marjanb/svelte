@@ -1,9 +1,12 @@
-import { postToShopify } from "$routes/api/utils/postToShopify";
+import { postToShopify } from "$lib/utils/postToShopify";
 import { error } from "@sveltejs/kit";
 import { productsQuery, productQuery } from "$gql/query/products";
 import { collectionsQuery, collectionQuery } from "$gql/query/collections";
+import { getCartQuery } from "$gql/query/cart";
+import { addToCartMutation } from "./gql/mutation/cart";
+import type { Product } from "$types";
 
-export const getProducts = async () => {
+export const getProducts = async (): Promise<Product[]> => {
   const shopifyResponse = await postToShopify({
     query: productsQuery,
   });
@@ -17,7 +20,7 @@ export const getProducts = async () => {
   return shopifyResponse.products.edges;
 };
 
-export const getProductByHandle = async (handle: string) => {
+export const getProductByHandle = async (handle: string): Promise<Product> => {
   const shopifyResponse = await postToShopify({
     query: productQuery,
     variables: {
@@ -34,12 +37,10 @@ export const getProductByHandle = async (handle: string) => {
   return shopifyResponse.product;
 };
 
-export const getCollections = async () => {
+export const getCollections = async (): Promise<void> => {
   const shopifyResponse = await postToShopify({
     query: collectionsQuery,
   });
-  
-  console.log('aaa shopifyResponse', shopifyResponse);
 
   if (!shopifyResponse) {
     throw error(404, {
@@ -50,7 +51,7 @@ export const getCollections = async () => {
   return shopifyResponse.collections.edges;
 };
 
-export const getCollectionByHandle = async (handle: string) => {
+export const getCollectionByHandle = async (handle: string): Promise<void> => {
   const shopifyResponse = await postToShopify({
     query: collectionQuery,
     variables: {
@@ -65,4 +66,35 @@ export const getCollectionByHandle = async (handle: string) => {
   }
 
   return shopifyResponse.collectionByHandle;
+};
+
+export const getCart = async (): Promise<void> => {
+  const shopifyResponse = await postToShopify({
+    query: getCartQuery,
+  });
+
+  if (!shopifyResponse) {
+    throw error(404, {
+      message: 'Something went wrong',
+    });
+  }
+
+  return shopifyResponse.cart;
+};
+
+export const addToCart = async (id: string): Promise<void> => {
+  const shopifyResponse = await postToShopify({
+    query: addToCartMutation,
+    variables: {
+      id,
+    },
+  });
+
+  if (!shopifyResponse) {
+    throw error(404, {
+      message: 'Something went wrong',
+    });
+  }
+
+  return shopifyResponse.cartCreate.cart;
 };
